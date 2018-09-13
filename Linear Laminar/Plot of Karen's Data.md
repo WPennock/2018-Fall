@@ -176,13 +176,16 @@ def CPvy(L,L0):
 L = np.arange(0.1,500,0.1)*u.NTU
 
 #  Creating y-axis values for data
-def CPvx(ConcClay,ConcNatOrgMat,ConcAl,material,NatOrgMat,coag,DiamTube,RatioHeightDiameter,Time,EnergyDis,Temp,k):
-    return 2*np.pi/3*k*floc.alpha(DiamTube, ConcClay, ConcAl, ConcNatOrgMat, NatOrgMat, coag, material, RatioHeightDiameter)*Time*(np.sqrt(EnergyDis/pc.viscosity_kinematic(Temp))).to(1/u.s)
+def CPvx(ConcClay,ConcNatOrgMat,ConcAl,material,NatOrgMat,coag,DiamTube,RatioHeightDiameter,Time,G,k):
+    return 2*np.pi/3*k*floc.alpha(DiamTube, ConcClay, ConcAl, ConcNatOrgMat, NatOrgMat, coag, material, RatioHeightDiameter)*Time*G
 
 def Eff(pC,Inf):
     return Inf*10**(-pC)    
 
 Inf = np.array([5,15,50,150,500])*u.NTU
+
+ATube = 5*u.mL/u.s/(56*u.m/(800*u.s))
+dTube = np.sqrt(4*ATube/np.pi)
 
 # fit k for C/C0
 def C_C0_fit(N,k):
@@ -194,9 +197,10 @@ plt.plot(Aggregated["Old alpha Composite Parameter"],Aggregated["Effluent (NTU)"
 N_graph = np.arange(0,30,0.1)
 plt.plot(N_graph,C_C0_fit(N_graph,kfit_C_C0),'k')
 plt.show()
-
 list(Aggregated)
-Aggregated["CPvx"] = CPvx(Aggregated["Influent (NTU)"].values*u.NTU,0*u.mg/u.L,Aggregated["Dose (mg/L)"].values*u.mg/u.L,)
+Aggregated["CPvx"] = CPvx(Aggregated["Influent (NTU)"].values*u.NTU,0*u.mg/u.L,Aggregated["Dose (mg/L)"].values*u.mg/u.L,floc.Clay,floc.HumicAcid,floc.PACl,dTube,floc.RATIO_HEIGHT_DIAM,Aggregated["theta (s)"].values*u.s,Aggregated["G (Hz)"].values*u.s,kfit_C_C0)
+Aggregated["CPvx"]
+
 
 # Make plot
 plt.clf()
@@ -241,5 +245,4 @@ plt.legend(loc=2,bbox_to_anchor=(-0.125,-0.6,1,0.37),ncol=2,borderpad=0.1,handle
 plt.savefig('performance.png',format='png',bbox_inches='tight')
 plt.savefig('performance.eps',format='eps',bbox_inches='tight')
 plt.show()
-```
 ```
