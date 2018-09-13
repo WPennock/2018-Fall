@@ -170,7 +170,7 @@ RMSEv
 ## Add linear fitting component
 ```python
 def CPvy(L,L0):
-  CP = (floc.sep_dist_clay(L, floc.Clay)**(2)-floc.sep_dist_clay(L0, floc.Clay)**(2))/(floc.Clay.Diameter*u.m)**2
+  CP = (floc.sep_dist_clay(L, KClay)**(2)-floc.sep_dist_clay(L0, KClay)**(2))/(KClay.Diameter*u.m)**2
   return CP
 
 L = np.arange(0.1,500,0.1)*u.NTU
@@ -194,55 +194,48 @@ def C_C0_fit(N,k):
 kfit_C_C0, kfitvar_C_C0 = curve_fit(C_C0_fit,Aggregated["Old alpha Composite Parameter"],Aggregated["Effluent (NTU)"].values/Aggregated["Influent (NTU)"].values)              
 kfit_C_C0
 plt.plot(Aggregated["Old alpha Composite Parameter"],Aggregated["Effluent (NTU)"].values/Aggregated["Influent (NTU)"].values,'x')
+list(Aggregated)
 N_graph = np.arange(0,30,0.1)
 plt.plot(N_graph,C_C0_fit(N_graph,kfit_C_C0),'k')
 plt.show()
-list(Aggregated)
-Aggregated["CPvx"] = CPvx(Aggregated["Influent (NTU)"].values*u.NTU,0*u.mg/u.L,Aggregated["Dose (mg/L)"].values*u.mg/u.L,floc.Clay,floc.HumicAcid,floc.PACl,dTube,floc.RATIO_HEIGHT_DIAM,Aggregated["theta (s)"].values*u.s,Aggregated["G (Hz)"].values*u.s,kfit_C_C0)
+Lam[0]["Influent (NTU)"]
+for i in range(0,len(Lam)):
+    Lam[i]["CPvx"] = CPvx(Lam[i]["Influent (NTU)"].values*u.NTU,0*u.mg/u.L,Lam[i]["Dose (mg/L)"].values*u.mg/u.L,KClay,floc.HumicAcid,KPACl,dTube,floc.RATIO_HEIGHT_DIAM,Lam[i]["theta (s)"].values*u.s,Lam[i]["G (Hz)"].values*u.s**(-1),kfit_C_C0)
+
+list(Lam[0])
+for i in range(0,len(Lam)):
+    Lam[i]["CPvxTest"] = 2/3*kfit_C_C0*np.pi*(2*Lam[i]["KGamma"].values-Lam[i]["KGamma"].values**2)*Lam[i]["G (Hz)"].values/u.s*Lam[i]["theta (s)"].values*u.s
+
 Aggregated["CPvx"]
 
+
+markers = ['kx','ks','kD','ko','k^','k+','ks','kD','ko','k^']
+fills = ['full','none','none','none','none','full','full','full','full','full']
+labels = [r'5 NTU, $\theta = $ 800 s',r'15 NTU, $\theta = $ 800 s',r'50 NTU, $\theta = $ 800 s',
+         r'150 NTU, $\theta = $ 800 s',r'500 NTU, $\theta = $ 800 s',r'5 NTU, $\theta = $ 1200 s',
+         r'15 NTU, $\theta = $ 1200 s',r'50 NTU, $\theta = $ 1200 s',r'150 NTU, $\theta = $ 1200 s',
+         r'500 NTU, $\theta = $ 1200 s']
 
 # Make plot
 plt.clf()
 plt.close('all')
 plt.figure()
-#50 NTU Model
+# Plot data
+for i in range(0,len(Lam)):
+    plt.loglog(Lam[i]["Effluent (NTU)"],Lam[i]["CPvxTest"],markers[i],fillstyle=fills[i],label=labels[i])
+# Plot models
+plt.loglog(L,CPvy(L,5*u.NTU),label=r'$C_0=$ 5 NTU Model')
+plt.loglog(L,CPvy(L,15*u.NTU),label=r'$C_0=$ 15 NTU Model')
 plt.loglog(L,CPvy(L,50*u.NTU),label=r'$C_0=$ 50 NTU Model')
-#50 NTU Data
-plt.loglog(Eff(dataset[0][0],Inf[0]),N_50_0,'rx', label=r'50 NTU, 0 mg/L HA Data')
-plt.loglog(Eff(dataset2[0][0],Inf[0]),N_50_0,'rx')
-plt.loglog(Eff(dataset[0][1],Inf[0]),N_50_3,'b+', label=r'50 NTU, 3 mg/L HA Data')
-plt.loglog(Eff(dataset2[0][1],Inf[0]),N_50_3,'b+')
-plt.loglog(Eff(dataset[0][2],Inf[0]),N_50_6,'gs', markerfacecolor='none', label=r'50 NTU, 6 mg/L HA Data')
-plt.loglog(Eff(dataset2[0][2],Inf[0]),N_50_6,'gs', markerfacecolor='none')
-plt.loglog(Eff(dataset[0][3],Inf[0]),N_50_9,'mD', markerfacecolor='none', label=r'50 NTU, 9 mg/L HA Data')
-plt.loglog(Eff(dataset2[0][3],Inf[0]),N_50_9,'mD', markerfacecolor='none')
-plt.loglog(Eff(dataset[0][4],Inf[0]),N_50_12,'co', markerfacecolor='none', label=r'50 NTU, 12 mg/L HA Data')
-plt.loglog(Eff(dataset2[0][4],Inf[0]),N_50_12,'co', markerfacecolor='none')
-plt.loglog(Eff(dataset[0][5],Inf[0]),N_50_15,'^',c='xkcd:brown', markerfacecolor='none', label=r'50 NTU, 15 mg/L HA Data')
-plt.loglog(Eff(dataset2[0][5],Inf[0]),N_50_15,'^',c='xkcd:brown', markerfacecolor='none')
-# 100 NTU Model
-plt.loglog(L,CPvy(L,100*u.NTU),label=r'$C_0=$ 100 NTU Model')
-# 100 NTU Data
-plt.loglog(Eff(dataset[1][0],Inf[1]),N_100_0,'kx', label=r'100 NTU, 0 mg/L HA Data' )
-plt.loglog(Eff(dataset2[1][0],Inf[1]),N_100_0,'kx')
-plt.loglog(Eff(dataset[1][1],Inf[1]),N_100_3, 'k+', label=r'100 NTU, 3 mg/L HA Data')
-plt.loglog(Eff(dataset2[1][1],Inf[1]),N_100_3,'k+')
-plt.loglog(Eff(dataset[1][2],Inf[1]),N_100_6,'ks', markerfacecolor='none', label=r'100 NTU, 6 mg/L HA Data')
-plt.loglog(Eff(dataset2[1][2],Inf[1]),N_100_6,'ks', markerfacecolor='none')
-plt.loglog(Eff(dataset[1][3],Inf[1]),N_100_9,'kD', markerfacecolor='none', label=r'100 NTU, 9 mg/L HA Data')
-plt.loglog(Eff(dataset2[1][3],Inf[1]),N_100_9,'kD', markerfacecolor='none')
-plt.loglog(Eff(dataset[1][4],Inf[1]),N_100_12,'ko', markerfacecolor='none', label=r'100 NTU, 12 mg/L HA Data')
-plt.loglog(Eff(dataset2[1][4],Inf[1]),N_100_12,'ko', markerfacecolor='none')
-plt.loglog(Eff(dataset[1][5],Inf[1]),N_100_15,'k^', markerfacecolor='none', label=r'100 NTU, 15 mg/L HA Data')
-plt.loglog(Eff(dataset2[1][5],Inf[1]),N_100_15,'k^', markerfacecolor='none')
+plt.loglog(L,CPvy(L,150*u.NTU),label=r'$C_0=$ 150 NTU Model')
+plt.loglog(L,CPvy(L,500*u.NTU),label=r'$C_0=$ 500 NTU Model')
 # Settings
-plt.axis([3E0, 1E2, 1E2, 5E3])
+plt.axis([3E-1, 8E2, 5E1, 2E4])
 plt.xlabel(r'Final Concentration (NTU)')
 plt.ylabel(r'$\frac{2}{3}k\pi \overline{\alpha}\overline{G}\theta$')
-plt.legend(loc=2,bbox_to_anchor=(-0.125,-0.6,1,0.37),ncol=2,borderpad=0.1,handletextpad=0.2,labelspacing=0,columnspacing=0.2,edgecolor='white')
+plt.legend(loc=2,bbox_to_anchor=(-0.1,-0.6,1,0.37),ncol=2,borderpad=0.1,handletextpad=0.2,labelspacing=0,columnspacing=0.2,edgecolor='white')
 # plt.tight_layout()
-plt.savefig('performance.png',format='png',bbox_inches='tight')
-plt.savefig('performance.eps',format='eps',bbox_inches='tight')
+plt.savefig('Karen_performance.png',format='png',bbox_inches='tight')
+plt.savefig('Karen_performance.eps',format='eps',bbox_inches='tight')
 plt.show()
 ```
