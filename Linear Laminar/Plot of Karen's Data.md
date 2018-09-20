@@ -204,10 +204,7 @@ for i in range(0,len(Lam)):
 
 list(Lam[0])
 for i in range(0,len(Lam)):
-    Lam[i]["CPvxTest"] = 2/3*kfit_C_C0*np.pi*(2*Lam[i]["KGamma"].values-Lam[i]["KGamma"].values**2)*Lam[i]["G (Hz)"].values/u.s*Lam[i]["theta (s)"].values*u.s
-
-Aggregated["CPvx"]
-
+    Lam[i]["CPvxTest"] = 2/3*k_vOa*np.pi*(2*Lam[i]["KGamma"].values-Lam[i]["KGamma"].values**2)*Lam[i]["G (Hz)"].values/u.s*Lam[i]["theta (s)"].values*u.s
 
 markers = ['kx','ks','kD','ko','k^','k+','ks','kD','ko','k^']
 fills = ['full','none','none','none','none','full','full','full','full','full']
