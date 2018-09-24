@@ -206,12 +206,13 @@ list(Lam[0])
 for i in range(0,len(Lam)):
     Lam[i]["CPvxTest"] = 2/3*k_vOa*np.pi*(2*Lam[i]["KGamma"].values-Lam[i]["KGamma"].values**2)*Lam[i]["G (Hz)"].values/u.s*Lam[i]["theta (s)"].values*u.s
 
-markers = ['kx','ks','kD','ko','k^','k+','ks','kD','ko','k^']
+markers = ['x','s','D','o','^','+','s','D','o','^']
 fills = ['full','none','none','none','none','full','full','full','full','full']
 labels = [r'5 NTU, $\theta = $ 800 s',r'15 NTU, $\theta = $ 800 s',r'50 NTU, $\theta = $ 800 s',
          r'150 NTU, $\theta = $ 800 s',r'500 NTU, $\theta = $ 800 s',r'5 NTU, $\theta = $ 1200 s',
          r'15 NTU, $\theta = $ 1200 s',r'50 NTU, $\theta = $ 1200 s',r'150 NTU, $\theta = $ 1200 s',
          r'500 NTU, $\theta = $ 1200 s']
+colors = ['purple','blue','green','orange','red','purple','blue','green','orange','red']
 
 # Make plot
 plt.clf()
@@ -219,18 +220,18 @@ plt.close('all')
 plt.figure()
 # Plot data
 for i in range(0,len(Lam)):
-    plt.loglog(Lam[i]["Effluent (NTU)"],Lam[i]["CPvxTest"],markers[i],fillstyle=fills[i],label=labels[i])
+    plt.loglog(Lam[i]["Effluent (NTU)"],Lam[i]["CPvxTest"],markers[i],color=colors[i],fillstyle=fills[i],label=labels[i])
 # Plot models
-plt.loglog(L,CPvy(L,5*u.NTU),label=r'$C_0=$ 5 NTU Model')
-plt.loglog(L,CPvy(L,15*u.NTU),label=r'$C_0=$ 15 NTU Model')
-plt.loglog(L,CPvy(L,50*u.NTU),label=r'$C_0=$ 50 NTU Model')
-plt.loglog(L,CPvy(L,150*u.NTU),label=r'$C_0=$ 150 NTU Model')
-plt.loglog(L,CPvy(L,500*u.NTU),label=r'$C_0=$ 500 NTU Model')
+plt.loglog(L,CPvy(L,5*u.NTU),color=colors[0],label=r'$C_0=$ 5 NTU Model')
+plt.loglog(L,CPvy(L,15*u.NTU),color=colors[1],label=r'$C_0=$ 15 NTU Model')
+plt.loglog(L,CPvy(L,50*u.NTU),color=colors[2],label=r'$C_0=$ 50 NTU Model')
+plt.loglog(L,CPvy(L,150*u.NTU),color=colors[3],label=r'$C_0=$ 150 NTU Model')
+plt.loglog(L,CPvy(L,500*u.NTU),color=colors[4],label=r'$C_0=$ 500 NTU Model')
 # Settings
 plt.axis([3E-1, 8E2, 5E1, 2E4])
 plt.xlabel(r'Final Concentration (NTU)')
 plt.ylabel(r'$\frac{2}{3}k\pi \overline{\alpha}\overline{G}\theta$')
-plt.legend(loc=2,bbox_to_anchor=(-0.1,-0.6,1,0.37),ncol=2,borderpad=0.1,handletextpad=0.2,labelspacing=0,columnspacing=0.2,edgecolor='white')
+plt.legend(loc=2,bbox_to_anchor=(-0.1,-0.6,1,0.37),ncol=3,borderpad=0.1,handletextpad=0.2,labelspacing=0,columnspacing=0.2,edgecolor='white')
 # plt.tight_layout()
 plt.savefig('Karen_performance.png',format='png',bbox_inches='tight')
 plt.savefig('Karen_performance.eps',format='eps',bbox_inches='tight')
