@@ -33,3 +33,10 @@ V_Stock = 100*u.mL
 V_Super = C_Stock*V_Stock/C_Super
 V_Super.to(u.mL)
 ```
+## Figure out pH adjustment
+```python
+pH_69 = 4.5
+M_H = 10**(-pH_69)*u.mol/u.L
+m_H = M_H*0.1*u.mL
+m_H.to(u.mol)
+```
