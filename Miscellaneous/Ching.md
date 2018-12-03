@@ -15,7 +15,8 @@ nu = 1*u.mm**2/u.s
 ```
 ## Estimate Velocity Gradient
 ```python
-hL = pc.headloss_fric(Q,ID,L,nu,0.007)
+hL = pc.headloss_fric(Q,ID,L,nu,0.006) # roughness doesn't matter, but can range from 0.006 to 0.07 for flexible smooth tubing (https://neutrium.net/fluid_flow/absolute-roughness/)
 eps = u.g_0*hL/t
-G = (np.sqrt(eps/(1*u.mm**2/u.s))).to(1/u.s)
+G = (np.sqrt(eps/(nu))).to(1/u.s)
+G
 ```
